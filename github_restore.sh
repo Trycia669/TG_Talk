@@ -6,7 +6,6 @@ DB_FILE="$DATA_DIR/bot_data.db"
 GH_BRANCH="${GH_BRANCH:-main}"
 GH_DB_PATH="${GH_DB_PATH:-data/bot_data.db}"
 
-# 检查必要变量
 if [ -z "$GH_TOKEN" ] || [ -z "$GH_USERNAME" ] || [ -z "$GH_REPO" ]; then
     echo "❌ 缺少 GitHub 配置变量 (GH_TOKEN / GH_USERNAME / GH_REPO)"
     exit 1
@@ -26,7 +25,6 @@ HTTP_CODE=$(echo "$RESPONSE" | tail -1)
 BODY=$(echo "$RESPONSE" | head -n -1)
 
 if [ "$HTTP_CODE" = "200" ]; then
-    # 提取 base64 内容并解码
     mkdir -p "$DATA_DIR"
     echo "$BODY" | python3 -c "
 import sys, json, base64
@@ -38,7 +36,7 @@ print('✅ 数据库写入成功:', len(content), '字节')
 "
     exit $?
 elif [ "$HTTP_CODE" = "404" ]; then
-    echo "⚠️  GitHub 仓库中未找到数据库文件（首次部署，将创建新库）"
+    echo "⚠️  GitHub 仓库中未找到数据库（首次部署，使用全新数据库）"
     exit 1
 else
     echo "❌ 下载失败 (HTTP $HTTP_CODE)"
