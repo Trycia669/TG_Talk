@@ -1,315 +1,285 @@
-# Telegram 多机器人托管平台
+# TG_Talk
 
-> 一键部署，轻松管理多个 Telegram 客服机器人
+> 双向 Telegram 托管平台 — 一个管理机器人，托管多个子机器人，用户消息双向转发，支持多种验证方式。
 
-## 🚀 快速部署
-
-### 方式 1：Docker 部署（⭐ 推荐）
-
-**三步快速开始：**
-
-```bash
-# 1. 下载配置文件
-mkdir tg_multi_bot && cd tg_multi_bot
-curl -O https://raw.githubusercontent.com/ryty1/TG_Talk/main/docker-compose.yml
-
-# 2. 编辑配置（修改 MANAGER_TOKEN 和 ADMIN_CHANNEL）
-nano docker-compose.yml
-
-# 3. 启动服务
-docker-compose up -d
-```
-
-**优势：**
-- ✅ 跨平台支持（Linux/Windows/macOS）
-- ✅ 环境隔离，无依赖冲突
-- ✅ 一键更新，轻松维护
-- ✅ 3分钟完成部署
-
-📖 [查看详细 Docker 部署文档](./README_DOCKER.md) | 📄 [快速入门指南](./QUICKSTART_DOCKER.md)
+**当前版本：v1.0.4**
 
 ---
 
-### 方式 2：传统部署（仅 Linux）
+## 功能特性
 
-```bash
-# 一键安装/卸载（安装后默认开启自启后台运行）
-bash <(curl -Ls https://raw.githubusercontent.com/ryty1/TG_Talk/refs/heads/main/setup.sh)
-```
-
-**适用场景：** Linux 服务器环境，需要直接控制系统服务
+- **多 Bot 托管**：一个管理机器人同时托管任意数量的子 Bot
+- **双向消息转发**：用户 → 主人、主人 → 用户，支持文字/图片/文件/语音/贴纸等所有消息类型
+- **两种转发模式**：直连模式（私聊转发）/ 话题模式（Forum 超级群话题转发）
+- **四种验证方式**：简单验证码 / 自定义验证题 / CF Turnstile 人机验证 / 人工审核
+- **自定义欢迎语**：每个子 Bot 可设置独立欢迎语，管理员可设置全局欢迎语
+- **用户管理**：拉黑/解除拉黑、强制取消验证、查看用户清单
+- **管理员广播**：向所有用过某 Bot 的用户发送通知
+- **GitHub 数据持久化**：SQLite 数据库自动备份到 GitHub，容器重启后自动恢复
 
 ---
 
-> **项目运营中心**
-> 如不想自己部署，可直接使用本项目快捷服务 [双向托管机器人](https://t.me/tg_multis_bot)
-  
-## 📖 简介
-
-这是一个完整的 Telegram 机器人托管解决方案，允许用户通过一个管理机器人来创建和管理多个客服机器人。支持直接消息转发和话题群组两种模式，内置验证码系统防止滥用。
-
-## ✨ 核心特性
-
-- 🤖 **多机器人管理** - 一个平台管理无数个客服机器人
-- 💬 **双模式支持** - 直接转发模式 / 话题群组模式
-- 🔐 **智能验证** - 5种验证码类型，有效防止垃圾消息
-- 📣 **自定义欢迎语** - SQLite 数据库存储，支持自动备份   （新增）
-- 📊 **用户管理** - 查看、拉黑、解除拉黑用户
-- 💾 **数据持久化** - SQLite 数据库存储，支持自动备份
-- 🔄 **自动同步** - GitHub 自动备份，数据安全无忧
-- 👥 **管理员功能** - 用户清单、广播通知、清理失效Bot
-
-## 📦 部署方式对比
-
-| 特性 | Docker 部署 ⭐ | 传统部署 |
-|------|----------------|---------|
-| 支持系统 | Linux/Windows/macOS | 仅 Linux |
-| 部署时间 | ~3 分钟 | ~5 分钟 |
-| 环境隔离 | ✅ 完全隔离 | ❌ 依赖系统 |
-| 维护难度 | ⭐ 简单 | ⭐⭐ 中等 |
-| 更新方式 | `docker-compose pull && up -d` | 手动更新代码 |
-| 推荐场景 | 所有用户 | Linux 服务器专家 |
-
-**Docker 部署** 只需修改两个配置项（Bot Token 和频道 ID），无需关心 Python 版本、依赖安装等问题。
-
-**传统部署** 脚本会自动完成：检查/安装 Python 3.11+、安装依赖包、创建虚拟环境、配置 systemd 服务、设置 GitHub 自动备份（可选）。
-
-## 📱 使用指南
-
-### 用户操作流程
-
-#### 1️⃣ 添加机器人
-
-1. 向管理机器人发送 `/start`
-2. 点击 `➕ 添加机器人`
-3. 输入你的 Bot Token
-4. 选择工作模式：
-   - **直接转发** - 消息直接转发给你
-   - **话题群组** - 消息转发到群组的特定话题
-
-#### 2️⃣ 管理机器人
-
-点击 `🤖 我的机器人` 查看和管理：
-- 📊 查看机器人状态
-- 👥 查看已验证用户
-- 🗑️ 删除机器人
-- ⚙️ 修改配置
-
-#### 3️⃣ 用户管理
-
-在机器人详情页面可以：
-- ✅ 查看用户列表
-- 🚫 拉黑用户
-- ✅ 解除拉黑
-- ❌ 取消验证
-
-### 两种工作模式
-
-#### 模式 1：直接转发（推荐新手）
-
-```
-用户 → Bot → 你的私聊
-你的私聊 → Bot → 用户
-```
-
-**优点**：简单直接，无需配置群组  
-**适合**：个人客服、小型业务
-
-#### 模式 2：话题群组（推荐专业用户）
-
-```
-用户 → Bot → 群组话题
-群组话题 → Bot → 用户
-```
-
-**优点**：多人协作，消息分类管理  
-**适合**：团队客服、大型业务
-
-**配置步骤**：
-1. 创建一个群组并开启话题功能
-2. 将 Bot 添加为管理员
-3. 在管理机器人中设置话题群组ID
-
-### 用户管理指令
-
-在与客服机器人的对话中，你可以使用以下指令（**仅 Bot 拥有者可用**）：
-
-| 指令 | 功能 | 使用方式1：回复消息 | 使用方式2：直接输入 | 话题模式：直接输入 |
-|------|------|-------------------|-------------------|-------------------|
-| `/id` | 查看用户信息 | 回复用户消息后输入 `/id` | `/id 123456789` |   `/id`  |
-| `/b` 或 `/block` | 拉黑用户 | 回复用户消息后输入 `/b` | `/b 123456789` |   `/b`  |
-| `/ub` 或 `/unblock` | 解除拉黑 | 回复用户消息后输入 `/ub` | `/ub 123456789` |   `/ub`  |
-| `/bl` 或 `/blocklist` | 查看黑名单 | - | `/bl` 或 `/blocklist` |   `/bl`  |
-| `/uv` 或 `/unverify` | 取消验证 | 回复用户消息后输入 `/uv` | `/uv 123456789` |   `/uv`  |
-
-### 指令使用示例
-
-**场景1：拉黑骚扰用户**
-```
-用户: 发送垃圾消息
-你: [回复该消息] /b
-Bot: 🚫 已将用户 123456789 加入黑名单
-```
-
-**场景2：查看用户信息**
-```
-你: [回复用户消息] /id
-Bot: 用户信息
-     • 用户ID: 123456789
-     • 用户名: @example
-     • 姓名: Example User
-     • 是否验证: ✅ 已验证
-```
-
-**场景3：批量管理**
-```
-你: /bl
-Bot: 📋 黑名单列表：
-     1. @user1 (ID: 111111)
-     2. @user2 (ID: 222222)
-
-你: /ub 111111
-Bot: ✅ 已将用户 111111 从黑名单移除
-```
-
-## 👑 管理员功能
-
-管理员（ADMIN_CHANNEL 配置的用户）拥有以下特权：
-
-| 功能 | 图标 | 说明 | 操作方式 |
-|------|------|------|---------|
-| 用户清单 | 👥 | 查看所有托管机器人的用户列表 | 支持分页浏览（每页15个） |
-| 广播通知 | 📢 | 向所有托管用户群发重要通知 | 平台维护、功能更新、紧急通告 |
-| 清理失效Bot | 🗑️ | 检测并批量删除 Token 失效的机器人 | 保持系统健康，需二次确认 |
-
-## 🔒 验证系统
-
-为防止滥用，用户首次使用需要通过验证，支持5种验证码类型：
-
-| 类型 | 图标 | 说明 | 示例 |
-|------|------|------|------|
-| 数学运算 | 🔢 | 加减乘混合运算 | `12 + 5 × 3 = ?` |
-| 数字序列 | 📊 | 等差/等比/平方数列 | `2, 4, 8, 16, ?` |
-| 中文问答 | 🇨🇳 | 常识问题 | `中国的首都是？` |
-| 逻辑判断 | 🧩 | 简单推理 | `如果A>B且B>C，则？` |
-| 时间问答 | ⏰ | 基础时间常识 | `一周有几天？` |
-
-✅ 验证通过后永久有效，无需重复验证。
-
-## 🛠️ 常用命令
-
-### Docker 部署命令
-
-| 功能 | 命令 |
-|------|------|
-| 启动服务 | `docker-compose up -d` |
-| 停止服务 | `docker-compose down` |
-| 重启服务 | `docker-compose restart` |
-| 查看日志 | `docker-compose logs -f` |
-| 查看状态 | `docker-compose ps` |
-| 更新镜像 | `docker-compose pull && docker-compose up -d` |
-
-### 传统部署命令（systemd）
-
-| 功能 | 命令 |
-|------|------|
-| 启动服务 | `systemctl start tg_multi_bot` |
-| 停止服务 | `systemctl stop tg_multi_bot` |
-| 重启服务 | `systemctl restart tg_multi_bot` |
-| 查看状态 | `systemctl status tg_multi_bot` |
-| 查看日志 | `journalctl -u tg_multi_bot -f` |
-| 关闭自启 | `systemctl disable tg_multi_bot` |
-
-## 📂 文件结构
-
-### Docker 部署
-
-```
-tg_multi_bot/
-├── docker-compose.yml   # Docker Compose 配置
-└── data/                # 数据目录（自动创建）
-    └── bot_data.db      # SQLite 数据库
-```
-
-### 传统部署
-
-```
-/opt/tg_multi_bot/
-├── host_bot.py          # 主程序
-├── database.py          # 数据库模块
-├── bot_data.db          # SQLite 数据库
-├── .env                 # 环境配置
-├── backup.sh            # 备份脚本
-├── venv/                # Python 虚拟环境
-└── backup_temp/         # 备份临时目录
-```
-
-### Q: Token 无效？
-
-1. 检查 Token 是否正确复制（包含完整的字符串）
-2. 确认 Bot 未被删除或禁用
-3. 在 @BotFather 中重新生成 Token
-
-### Q: 消息无法转发？
-
-1. **直接模式**：确保你已经给 Bot 发送过 `/start`
-2. **话题模式**：确认 Bot 是群组管理员且话题ID正确
-
-## 📊 系统要求
-
-### Docker 部署（推荐）
-
-| 项目 | 要求 |
-|------|------|
-| 操作系统 | Linux/Windows/macOS |
-| Docker | 20.10+ |
-| Docker Compose | 1.29+ |
-| 内存 | 最低 512MB（推荐 1GB+） |
-| 磁盘 | 最低 1GB 可用空间 |
-| 网络 | 稳定的互联网连接 |
-
-### 传统部署
-
-| 项目 | 要求 |
-|------|------|
-| 操作系统 | Ubuntu 20.04+ / Debian 10+ |
-| Python | 3.11 或更高版本 |
-| 内存 | 最低 512MB（推荐 1GB+） |
-| 磁盘 | 最低 1GB 可用空间 |
-| 网络 | 稳定的互联网连接 |
-
-
-### 获取帮助
-
-- 📖 查看完整文档（本README）
-- [开发者](https://t.me/SerokBot_bot)
-
-### 报告问题
-
-发现 Bug 或有建议？欢迎反馈：
-1. 提供详细的错误信息
-2. 附上日志输出
-3. 说明复现步骤
-
-## ⚠️ 注意事项
-
-1. **保护 Token**：切勿将 Bot Token 分享给他人
-2. **定期备份**：虽然有自动备份，建议定期手动备份
-3. **谨慎删除**：删除机器人前请确认，删除后无法恢复用户数据
-4. **合理使用**：遵守 Telegram 的使用条款和限制
-5. **监控日志**：定期查看日志，及时发现异常
-
-## 📜 开源协议
-
-MIT License - 自由使用，保留版权声明
-
-## 🎯 版本信息
-
-- **当前版本**: v2.0
-- **更新日期**: 2025-11-18
-- **数据库版本**: SQLite 3
-- **Python版本**: 3.11+
+## 部署到 Northflank
+
+### 第一步：准备 GitHub 备份仓库
+
+数据库备份需要一个 GitHub 私有仓库来存储 SQLite 文件。
+
+1. 登录 [github.com](https://github.com)，点击右上角 **+** → **New repository**
+2. 仓库名填 `tg-talk-data`，选择 **Private**，点击 **Create repository**
+3. 生成 GitHub Token：
+   - 前往 https://github.com/settings/tokens/new
+   - Note 随意填写，如 `tg-talk-backup`
+   - Expiration 选 **No expiration**（或按需设置）
+   - 勾选 **repo**（完整仓库权限）
+   - 点击 **Generate token**，**复制并妥善保存**（页面关闭后无法再看到）
 
 ---
 
-**Made with ❤️ for Telegram Bot Lovers**
+### 第二步：准备 Telegram Bot
+
+1. 在 Telegram 中找到 [@BotFather](https://t.me/BotFather)
+2. 发送 `/newbot`，按提示创建管理机器人，获取 **Bot Token**（格式：`123456789:ABCdef...`）
+3. 创建一个 Telegram 群组或频道作为管理员通知频道，将上面的管理机器人加入并设为管理员
+4. 获取该群组/频道的 ID：
+   - 将 [@userinfobot](https://t.me/userinfobot) 加入群组，它会自动回复群组 ID（以 `-100` 开头）
+
+---
+
+### 第三步：Fork 仓库并提交文件
+
+1. Fork 本仓库到你的 GitHub 账号
+2. 确保仓库根目录包含以下文件（v1.0.4 版本已自动包含）：
+
+```
+TG_Talk/
+├── Dockerfile          ← 已适配 Northflank
+├── docker-start.sh     ← 启动脚本（含 GitHub 备份逻辑）
+├── host_bot.py         ← 主程序
+├── database.py         ← 数据库模块
+├── verify_server.py    ← CF 验证服务器
+├── github_backup.sh    ← 备份脚本
+└── github_restore.sh   ← 恢复脚本
+```
+
+> `templates/` 目录的 HTML 文件已内嵌在 Dockerfile 中，无需单独上传。
+
+---
+
+### 第四步：在 Northflank 创建服务
+
+#### 4.1 注册并创建项目
+
+1. 前往 [northflank.com](https://northflank.com) 注册账号（免费套餐即可）
+2. 点击 **New Project**，输入项目名称（如 `tg-talk`），点击 **Create Project**
+
+#### 4.2 创建 Combined Service
+
+1. 进入项目后，点击 **Add Service** → **Combined Service**
+2. **Source** 选项卡：
+   - 点击 **Connect GitHub**，授权 Northflank 访问你的仓库
+   - 选择你 Fork 的 `TG_Talk` 仓库
+   - Branch 选 `main`
+   - Build type 选 **Dockerfile**（会自动检测根目录的 Dockerfile）
+3. 点击 **Next**
+
+#### 4.3 配置资源
+
+| 配置项 | 推荐值 | 说明 |
+|--------|--------|------|
+| CPU | 0.1 vCPU | 免费套餐范围内 |
+| Memory | 256 MB | 建议 512 MB 以上更稳定 |
+| Replicas | 1 | 单实例即可 |
+
+#### 4.4 配置端口
+
+在 **Ports** 页面添加：
+
+| 端口 | 协议 | 说明 |
+|------|------|------|
+| 8080 | HTTP | CF 验证页面 / 健康检查 |
+
+添加端口后，Northflank 会自动分配一个公网域名（格式如 `https://xxx-xxx.northflank.app`），**复制这个域名**，后面填写 `VERIFY_SERVER_URL` 时需要用到。
+
+#### 4.5 配置环境变量
+
+在 **Environment Variables** 页面逐条添加以下变量：
+
+---
+
+##### 必需变量
+
+| 变量名 | 示例值 | 说明 |
+|--------|--------|------|
+| `MANAGER_TOKEN` | `123456789:ABCdef...` | 管理机器人的 Bot Token（从 @BotFather 获取） |
+| `ADMIN_CHANNEL` | `-1001234567890` | 管理员通知频道/群组 ID（以 `-100` 开头） |
+
+##### GitHub 数据备份变量（强烈建议配置）
+
+| 变量名 | 示例值 | 说明 |
+|--------|--------|------|
+| `GH_USERNAME` | `your_github_name` | 你的 GitHub 用户名 |
+| `GH_REPO` | `tg-talk-data` | 第一步创建的私有备份仓库名 |
+| `GH_TOKEN` | `ghp_xxxxxxxxxxxx` | 第一步生成的 GitHub Token |
+
+##### CF Turnstile 验证变量（使用 CF 验证时必填）
+
+| 变量名 | 示例值 | 说明 |
+|--------|--------|------|
+| `CF_TURNSTILE_SITE_KEY` | `0x4AAAAAAA...` | Cloudflare Turnstile 站点密钥 |
+| `CF_TURNSTILE_SECRET_KEY` | `0x4AAAAAAA...` | Cloudflare Turnstile 密钥 |
+| `VERIFY_SERVER_URL` | `https://xxx.northflank.app` | Northflank 分配的公网域名（4.4 步骤中复制的） |
+
+> 获取 CF Turnstile 密钥：登录 [Cloudflare Dashboard](https://dash.cloudflare.com/) → Turnstile → Add site → 选择 Managed 类型 → 复制 Site Key 和 Secret Key
+
+##### 可选变量
+
+| 变量名 | 默认值 | 说明 |
+|--------|--------|------|
+| `GITHUB_BACKUP_INTERVAL` | `3600` | 自动备份间隔（秒），建议 `1800`（30 分钟） |
+| `GH_BRANCH` | `main` | GitHub 备份仓库的分支名 |
+| `GH_DB_PATH` | `data/bot_data.db` | 数据库在备份仓库中的存储路径 |
+| `VERIFY_SERVER_PORT` | `8080` | CF 验证服务器监听端口（与 Northflank 端口保持一致） |
+| `SECRET_KEY` | `your-secret-key-here` | Flask Session 密钥（建议修改为随机字符串） |
+
+#### 4.6 部署
+
+所有配置完成后，点击 **Deploy**。Northflank 会自动拉取代码、构建 Docker 镜像并启动容器。
+
+---
+
+### 第五步：验证部署
+
+在 Northflank 的 **Logs** 标签页，看到以下输出说明部署成功：
+
+```
+TG_Talk v1.0.4 - Northflank 模式
+[2025-xx-xx] 尝试从 GitHub 恢复数据库...
+[2025-xx-xx] ✅ 数据库恢复成功（首次部署显示：使用全新数据库）
+[2025-xx-xx] 🌐 启动 CF 验证服务器 (端口 8080)...
+[2025-xx-xx] ✅ 验证服务器已启动
+[2025-xx-xx] 启动后台备份任务（间隔 1800s）
+[2025-xx-xx] 🚀 启动 TG Bot...
+```
+
+---
+
+## 使用说明
+
+### 管理机器人命令
+
+向管理机器人（`MANAGER_TOKEN` 对应的 Bot）发送以下操作：
+
+| 操作 | 说明 |
+|------|------|
+| `/start` | 打开主菜单 |
+| 发送子 Bot 的 Token | 添加一个新的子 Bot 开始托管 |
+
+主菜单按钮说明：
+
+| 按钮 | 功能 |
+|------|------|
+| ➕ 添加机器人 | 引导添加新的子 Bot |
+| 🤖 我的机器人 | 查看已托管的子 Bot 列表及管理选项 |
+| 📝 全局欢迎语 | 设置所有子 Bot 的默认欢迎语（管理员专属） |
+| 👥 用户清单 | 查看所有用户（管理员专属） |
+| 📢 广播通知 | 向所有用户发送通知（管理员专属） |
+| 🗑️ 清理失效 Bot | 删除已失效的子 Bot（管理员专属） |
+
+### 子 Bot 管理选项
+
+在「我的机器人」中选择一个子 Bot 后可进行以下设置：
+
+| 选项 | 说明 |
+|------|------|
+| 🔁 切换转发模式 | 直连模式（私聊）↔ 话题模式（Forum 群组） |
+| 🔐 验证设置 | 切换验证方式（简单/自定义/CF/人工） |
+| 💬 欢迎语设置 | 设置该 Bot 的专属欢迎语 |
+| 🗑️ 删除 Bot | 停止托管并删除配置 |
+
+### 验证方式说明
+
+| 验证类型 | 环境变量依赖 | 适用场景 |
+|----------|-------------|----------|
+| **简单验证码** | 无 | 随机数学题/逻辑题，自动验证，默认方式 |
+| **自定义验证题** | 无 | 在机器人内设置自定义问题和答案 |
+| **CF Turnstile** | `CF_TURNSTILE_SITE_KEY`、`CF_TURNSTILE_SECRET_KEY`、`VERIFY_SERVER_URL` | 更强的人机验证，需要 Cloudflare 账号 |
+| **人工审核** | 无 | 用户提交申请，主人手动点击通过/拒绝 |
+
+### 话题模式（Forum）
+
+话题模式将每个用户的对话映射到 Telegram 超级群的独立话题中，便于多用户管理。
+
+启用方式：
+1. 创建一个开启了「话题」功能的 Telegram 超级群
+2. 将子 Bot 加入该群并设为管理员（需要管理话题权限）
+3. 在子 Bot 管理菜单中切换到「话题模式」，发送群组 ID 完成绑定
+
+---
+
+## 数据备份说明
+
+配置 GitHub 备份后，系统会：
+
+- **启动时**：自动从 GitHub 仓库拉取最新的 `bot_data.db` 数据库
+- **运行中**：每隔 `GITHUB_BACKUP_INTERVAL` 秒自动推送备份（默认每小时一次）
+- **退出时**：收到停止信号后执行最终备份，确保数据不丢失
+
+备份文件存储在你的私有仓库 `GH_REPO` 的 `GH_DB_PATH` 路径下。
+
+查看备份日志：
+
+```
+容器内路径：/app/data/backup.log
+```
+
+---
+
+## 更新部署
+
+代码更新后：
+1. 将新版本文件推送到你 Fork 的仓库
+2. 在 Northflank → Service → **Deployments** 点击 **Redeploy**
+
+或在 Northflank 的 Settings 中开启 **Auto-deploy on push**，推送即自动部署。
+
+---
+
+## 常见问题
+
+**Q: 容器重启后数据会丢失吗？**  
+A: 不会。每次启动时脚本会自动从 GitHub 恢复最新数据库。未配置 GitHub 备份则会丢失，强烈建议配置。
+
+**Q: 构建失败，报 `/templates`: not found？**  
+A: templates 目录的 HTML 已内嵌在 Dockerfile 中，此错误说明使用了旧版 Dockerfile。请确认使用的是本仓库提供的 Dockerfile。
+
+**Q: CF 验证链接无法访问？**  
+A: 检查 `VERIFY_SERVER_URL` 是否填写了 Northflank 分配的公网域名，且 8080 端口已在 Northflank Ports 中添加。
+
+**Q: 子 Bot 添加失败？**  
+A: 确认 Bot Token 正确，且该 Bot 没有被其他程序使用（一个 Token 同时只能有一个 Polling 连接）。
+
+**Q: 免费套餐够用吗？**  
+A: Northflank 免费套餐支持运行 1 个服务，对于托管少量 Bot 完全够用。资源紧张时建议升级到 512 MB 内存。
+
+---
+
+## 项目结构
+
+```
+TG_Talk/
+├── host_bot.py         # 主程序：管理机器人 + 子 Bot 逻辑
+├── database.py         # SQLite 数据库操作模块
+├── verify_server.py    # CF Turnstile 验证 Flask 服务
+├── Dockerfile          # Docker 镜像构建（含内嵌 HTML 模板）
+├── docker-start.sh     # 容器启动脚本
+├── github_backup.sh    # 数据库备份到 GitHub
+├── github_restore.sh   # 从 GitHub 恢复数据库
+└── .env.northflank     # 环境变量配置参考（不要提交到仓库）
+```
+
+---
+
+## License
+
+MIT
