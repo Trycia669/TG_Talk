@@ -1,0 +1,4 @@
+# 泰国 SIM 卡 Wi-Fi Calling 配置规则
+
+#AIS
+DOMAIN-SUFFIX,epdg.epc.mnc003.mcc520.pub.3gppnetwork.org

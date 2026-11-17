@@ -1,0 +1,9 @@
+# 香港 SIM 卡 Wi-Fi Calling 配置规则
+
+DOMAIN-SUFFIX,wlan.three.com.hk
+DOMAIN-SUFFIX,epdg.epc.mnc000.mcc454.pub.3gppnetwork.org
+DOMAIN-SUFFIX,ss.epdg.epc.mnc000.mcc454.pub.3gppnetwork.org
+DOMAIN-SUFFIX,ss.epdg.epc.geo.mnc000.mcc454.pub.3gppnetwork.org
+IP-CIDR,203.145.92.0/24,no-resolve
+IP-CIDR,203.145.88.0/21,no-resolve
+IP-CIDR,203.145.80.0/20,no-resolve
